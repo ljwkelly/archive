@@ -16,8 +16,7 @@ socket.on('updateCircles', (data) => {
   stars.push(...data.stars); // Update stars array with data from the server
   whiteCircles.length = 0; // Clear white circles array
   whiteCircles.push(...data.whiteCircles); // Update white circles array with data from the server
-  drawStars();
-  drawWhiteCircles();
+  animate();
 });
 
 function createWhiteCircle() {
@@ -33,10 +32,6 @@ function createWhiteCircle() {
 
   // Clear the input field
   textInput.value = '';
-
-  // Redraw the stars and white circles
-  drawStars();
-  drawWhiteCircles();
 }
 
 function drawStars() {
@@ -93,4 +88,5 @@ function handleKeyDown(event) {
     createWhiteCircle();
   }
 }
+
 
