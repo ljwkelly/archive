@@ -75,6 +75,7 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
+// Start the animation loop
 animate();
 
 window.addEventListener('resize', () => {
