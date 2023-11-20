@@ -6,36 +6,35 @@ const socket = io();
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// Array to store stars and white circles
+const stars = [];
+const whiteCircles = [];
+
 // Listen for updates from the server
 socket.on('updateCircles', (data) => {
+  stars.length = 0; // Clear stars array
+  stars.push(...data.stars); // Update stars array with data from the server
   drawStars();
-  drawWhiteCircles(data);
+  drawWhiteCircles(data.whiteCircles);
 });
 
 function createWhiteCircle() {
   const x = Math.random() * canvas.width;
   const y = Math.random() * canvas.height;
-  const radius = 8;
+  const radius = 3;
   const text = textInput.value || 'Default Text';
 
-  context.fillStyle = '#ffffff';
-  context.beginPath();
-  context.arc(x, y, radius, 0, Math.PI * 2);
-  context.fill();
+  whiteCircles.push({ x, y, radius, text });
 
-  context.fillStyle = '#ffffff';
-  context.font = '12px Baskerville';
-  context.fillText(text, x + radius + 5, y + 5);
-
-  // Send the new circle to the server
+  // Send the new white circle to the server
   socket.emit('createWhiteCircle', { x, y, radius, text });
-  textInput.value = '';
-}
 
-function handleKeyDown(event) {
-  if (event.key === 'Enter') {
-    createWhiteCircle();
-  }
+  // Clear the input field
+  textInput.value = '';
+
+  // Redraw the stars and white circles
+  drawStars();
+  drawWhiteCircles();
 }
 
 function drawStars() {
@@ -43,22 +42,18 @@ function drawStars() {
 
   context.fillStyle = '#ffffff';
 
-  for (let i = 0; i < 200; i++) {
-    const x = Math.random() * canvas.width;
-    const y = Math.random() * canvas.height;
-    const radius = Math.random() * 2;
-
+  for (const star of stars) {
     context.beginPath();
-    context.arc(x, y, radius, 0, Math.PI * 2);
+    context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
     context.fill();
   }
 }
 
-function drawWhiteCircles(circles) {
+function drawWhiteCircles() {
   context.fillStyle = '#ffffff';
   context.font = '12px Baskerville';
 
-  for (const circle of circles) {
+  for (const circle of whiteCircles) {
     context.beginPath();
     context.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
     context.fill();
@@ -70,7 +65,7 @@ function drawWhiteCircles(circles) {
 
 function animate() {
   drawStars();
-  // No need to draw white circles here; they will be drawn on updates from the server
+  drawWhiteCircles();
 
   requestAnimationFrame(animate);
 }
@@ -81,6 +76,12 @@ window.addEventListener('resize', () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 });
+
+function handleKeyDown(event) {
+  if (event.key === 'Enter') {
+    createWhiteCircle();
+  }
+}
 
 
 
