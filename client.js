@@ -14,8 +14,10 @@ const whiteCircles = [];
 socket.on('updateCircles', (data) => {
   stars.length = 0; // Clear stars array
   stars.push(...data.stars); // Update stars array with data from the server
+  whiteCircles.length = 0; // Clear white circles array
+  whiteCircles.push(...data.whiteCircles); // Update white circles array with data from the server
   drawStars();
-  drawWhiteCircles(data.whiteCircles);
+  drawWhiteCircles();
 });
 
 function createWhiteCircle() {
@@ -91,3 +93,4 @@ function handleKeyDown(event) {
     createWhiteCircle();
   }
 }
+
