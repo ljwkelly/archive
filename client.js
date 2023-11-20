@@ -91,8 +91,3 @@ function handleKeyDown(event) {
     createWhiteCircle();
   }
 }
-
-
-
-
-
