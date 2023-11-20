@@ -1,28 +1,87 @@
-const express = require('express');
-const http = require('http');
-const socketIO = require('socket.io');
+let inputElement;
+let saveButton;
+let displayElement;
+let gistId;
 
-const app = express();
-const server = http.createServer(app);
-const io = socketIO(server);
+function setup() {
+  noCanvas();
 
-app.use(express.static('public'));
+  // Create input element
+  inputElement = createInput('Type something...');
+  inputElement.changed(saveText);
 
-io.on('connection', (socket) => {
-  console.log('A user connected');
+  // Create save button
+  saveButton = createButton('Save');
+  saveButton.mousePressed(saveText);
 
-  // Listen for createWhiteCircle events from clients
-  socket.on('createWhiteCircle', (data) => {
-    // Broadcast the new white circle data to all connected clients
-    io.emit('updateCircles', { whiteCircles: data });
-  });
+  // Create display element
+  displayElement = createP('');
 
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
-  });
-});
+  // Load saved text on startup
+  loadText();
+}
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+function saveText() {
+  // Save text to GitHub Gist
+  let textToSave = inputElement.value();
+
+  let data = {
+    description: 'OpenProcessing Saved Text',
+    public: true,
+    files: {
+      'savedText.txt': {
+        content: textToSave,
+      },
+    },
+  };
+
+  let method;
+  let url;
+
+  if (gistId) {
+    // Update existing Gist
+    method = 'PATCH';
+    url = `https://api.github.com/gists/${gistId}`;
+  } else {
+    // Create new Gist
+    method = 'POST';
+    url = 'https://api.github.com/gists';
+  }
+
+  httpDo(
+    url,
+    method,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    },
+    function (response) {
+      let json = JSON.parse(response);
+      gistId = json.id;
+      displayElement.html('Saved Text: ' + textToSave);
+    }
+  );
+}
+
+function loadText() {
+  // Load saved text from GitHub Gist
+  if (gistId) {
+    let url = `https://api.github.com/gists/${gistId}`;
+
+    httpDo(
+      url,
+      'GET',
+      function (response) {
+        let json = JSON.parse(response);
+        if (json.files && json.files['savedText.txt']) {
+          let savedText = json.files['savedText.txt'].content;
+          inputElement.value(savedText);
+          displayElement.html('Saved Text: ' + savedText);
+        }
+      }
+    );
+  }
+}
