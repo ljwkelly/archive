@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -53,96 +52,7 @@
   <input type="text" id="textInput" placeholder="Enter an object" onkeydown="handleKeyDown(event)">
   <canvas id="starry-night"></canvas>
   
-  <script>
-    const canvas = document.getElementById('starry-night');
-    const context = canvas.getContext('2d');
-    const stars = [];
-    const whiteCircles = [];
-    const textInput = document.getElementById('textInput');
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    function createStar() {
-      const x = Math.random() * canvas.width;
-      const y = Math.random() * canvas.height;
-      const radius = Math.random() * 2;
-
-      stars.push({ x, y, radius });
-    }
-
-    function drawStars() {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-
-      context.fillStyle = '#ffffff';
-
-      for (const star of stars) {
-        context.beginPath();
-        context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        context.fill();
-      }
-    }
-
-    function updateStars() {
-      for (const star of stars) {
-        star.x += Math.random() - 0.5;
-        star.y += Math.random() - 0.5;
-      }
-    }
-
-    function createWhiteCircle() {
-      const x = Math.random() * canvas.width;
-      const y = Math.random() * canvas.height;
-      const radius = 3;
-      const text = textInput.value || 'Default Text';
-
-      whiteCircles.push({ x, y, radius, text });
-      textInput.value = '';
-
-      drawStars();
-      drawWhiteCircles();
-    }
-
-    function drawWhiteCircles() {
-      context.fillStyle = '#ffffff';
-      context.font = '12px Baskerville';
-
-      for (const circle of whiteCircles) {
-        context.beginPath();
-        context.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
-        context.fill();
-
-        context.fillStyle = '#ffffff';
-        context.fillText(circle.text, circle.x + circle.radius + 5, circle.y + 5);
-      }
-    }
-
-    function animate() {
-      createStar();
-      drawStars();
-      drawWhiteCircles();
-      updateStars();
-
-      requestAnimationFrame(animate);
-    }
-
-    for (let i = 0; i < 200; i++) {
-      createStar();
-    }
-
-    animate();
-
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-
-    function handleKeyDown(event) {
-      if (event.key === 'Enter') {
-        createWhiteCircle();
-      }
-    }
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
   <script src="client.js"></script>
 </body>
 </html>
