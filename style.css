@@ -22,6 +22,7 @@ body {
 }
 
 #textInput::placeholder {
+  color: black;
   font-family: 'Baskerville', serif;
 }
 
@@ -35,3 +36,4 @@ canvas {
   margin: 20px auto;
   border: 2px solid white;
 }
+
