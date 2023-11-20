@@ -67,7 +67,16 @@ function animate() {
   drawStars();
   drawWhiteCircles();
 
+  updateStars(); // This function is responsible for updating the star positions
+
   requestAnimationFrame(animate);
+}
+
+function updateStars() {
+  for (const star of stars) {
+    star.x += (Math.random() - 0.5) * 0.5; // Adjust the multiplier to control the speed
+    star.y += (Math.random() - 0.5) * 0.5;
+  }
 }
 
 animate();
@@ -82,6 +91,7 @@ function handleKeyDown(event) {
     createWhiteCircle();
   }
 }
+
 
 
 
